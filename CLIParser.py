@@ -3,7 +3,7 @@ from enum import Enum, auto
 
 
 class Params(Enum):
-    FAMILLY = auto()
+    FAMILY = auto()
     ELEMENTS = auto()
     VERBOSE = auto()
     QUIET = auto()
@@ -20,8 +20,8 @@ def parse() -> dict:
 
     ## Parameters ##
 
-    parser.add_argument("familly",
-                        help="The familly of atommic interaction",
+    parser.add_argument("family",
+                        help="The family of atommic interaction",
                         action="store",
                         type=str)
 
@@ -70,12 +70,12 @@ def parse() -> dict:
                                 help="Looking for potential files only in the NIST remote database",
                                 action="store_true")
 
-    parser.add_argument("--force-nist",
+    parser.add_argument("--force-nist", "-fn",
                         required=False,
                         help="Download all available NIST potentials",
                         action="store_true",
                         dest="load_nist")
-    parser.add_argument("--force-kim",
+    parser.add_argument("--force-kim", "-fk",
                         required=False,
                         help="Download all available OpenKIM potentials",
                         action="store_true",
@@ -84,7 +84,7 @@ def parse() -> dict:
     args = parser.parse_args()
 
     return {
-        Params.FAMILLY: args.familly,
+        Params.FAMILY: args.family,
         Params.ELEMENTS: args.elements,
         Params.VERBOSE: args.verbose,
         Params.QUIET: args.quiet,

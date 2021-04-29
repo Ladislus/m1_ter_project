@@ -3,7 +3,9 @@ from CLIParser import Params
 
 def print_parameters(parameters: dict):
     if not parameters[Params.QUIET]:
-        print("Interaction familly: {}".format(parameters[Params.FAMILLY]))
+        print("###### Options ######")
+
+        print("Interaction family: {}".format(parameters[Params.FAMILY]))
         print("Elements interacting: [ {} ]".format(", ".join(parameters[Params.ELEMENTS])))
 
         if parameters[Params.VERBOSE]:
@@ -26,3 +28,5 @@ def print_parameters(parameters: dict):
                 print("Loading all OpenKIM database")
             if parameters[Params.LOAD_NIST]:
                 print("Loading all NIST database")
+
+        print("#####################\n\n")
