@@ -1,1 +1,1 @@
-# m1_ter_project
+# Master 1 : Projet TER
