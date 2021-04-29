@@ -11,6 +11,8 @@ class Params(Enum):
     REMOTE_ONLY = auto()
     OPENKIM_ONLY = auto()
     NIST_ONLY = auto()
+    LOAD_NIST = auto()
+    LOAD_KIM = auto()
 
 
 def parse() -> dict:
@@ -68,6 +70,17 @@ def parse() -> dict:
                                 help="Looking for potential files only in the NIST remote database",
                                 action="store_true")
 
+    parser.add_argument("--force-nist",
+                        required=False,
+                        help="Download all available NIST potentials",
+                        action="store_true",
+                        dest="load_nist")
+    parser.add_argument("--force-kim",
+                        required=False,
+                        help="Download all available OpenKIM potentials",
+                        action="store_true",
+                        dest="load_kim")
+
     args = parser.parse_args()
 
     return {
@@ -78,5 +91,7 @@ def parse() -> dict:
         Params.LOCAL_ONLY: args.local,
         Params.REMOTE_ONLY: args.remote,
         Params.OPENKIM_ONLY: args.kim,
-        Params.NIST_ONLY: args.nist
+        Params.NIST_ONLY: args.nist,
+        Params.LOAD_NIST: args.load_nist,
+        Params.LOAD_KIM: args.load_kim
     }

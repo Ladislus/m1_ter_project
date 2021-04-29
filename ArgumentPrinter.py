@@ -22,3 +22,7 @@ def print_parameters(parameters: dict):
                     print("Fectching OpenKIM database")
                 else:
                     print("All databases")
+            if parameters[Params.LOAD_KIM]:
+                print("Loading all OpenKIM database")
+            if parameters[Params.LOAD_NIST]:
+                print("Loading all NIST database")
