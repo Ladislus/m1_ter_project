@@ -3,30 +3,30 @@ from CLIParser import Params
 
 def print_parameters(parameters: dict):
     if not parameters[Params.QUIET]:
-        print("###### Options ######")
+        print("\n###### Options ######")
 
-        print("Interaction family: {}".format(parameters[Params.FAMILY]))
-        print("Elements interacting: [ {} ]".format(", ".join(parameters[Params.ELEMENTS])))
+        print("Famille d'intéraction: {}".format(parameters[Params.FAMILY]))
+        print("Elements: [ {} ]".format(", ".join(parameters[Params.ELEMENTS])))
 
         if parameters[Params.VERBOSE]:
-            print("Verbose mode activated")
+            print("Mode verbeux")
             if parameters[Params.LOCAL_ONLY]:
-                print("Local only")
+                print("Recherche en local seulement")
             elif parameters[Params.REMOTE_ONLY]:
-                print("Remote only")
+                print("Recherche en ligne seulement")
             else:
-                print("Default search")
+                print("Strategie de recherche par défaut")
 
             if not parameters[Params.LOCAL_ONLY]:
                 if parameters[Params.NIST_ONLY]:
-                    print("Fectching NIST database")
+                    print("Récupération du NIST uniquement")
                 elif parameters[Params.OPENKIM_ONLY]:
-                    print("Fectching OpenKIM database")
+                    print("Récupération de OpenKIM uniquement")
                 else:
-                    print("All databases")
+                    print("Recherche vers toutes les base de données")
             if parameters[Params.LOAD_KIM]:
-                print("Loading all OpenKIM database")
+                print("Téléchargement intégrale de la base de donnée OpenKIM")
             if parameters[Params.LOAD_NIST]:
-                print("Loading all NIST database")
+                print("Téléchargement intégrale de la base de donnée du NIST")
 
-        print("#####################\n\n")
+        print("#####################\n")

@@ -20,9 +20,9 @@ class ErrorHandler:
 
     def output(self) -> None:
         if self.hasError():
-            print("Errors:")
-            for i in range(self._errorCount - 1):
-                print("\tError {}: " + self._errors[i])
+            print("⚠️ Errors ⚠️")
+            for i in range(self._errorCount):
+                print("\tError {}: {}".format(i, self._errors[i]))
             self.clear()
         else:
             print("No errors\n")

@@ -26,10 +26,10 @@ def cleanDirPotential(localpath: str = '.'):
             os.remove(path)
 
 
-def getAllPairStyles() -> list[str]:
+def getAllPairStyles() -> set[str]:
     db = am.library.Database(load='lammps_potentials', verbose=False)
     db.load_lammps_potentials()
-    return db.lammps_potentials_df.pair_style
+    return set(db.lammps_potentials_df.pair_style)
 
 
 def download_all_lammps_potentials(verbose: bool = True, format: str = 'json', localpath: str = '.',
@@ -205,7 +205,7 @@ def download_lammps_query(pot_id: str = None, id: str = None, elements: List[str
         potential = am.load_lammps_potential(elements=elements, localpath=".", getfiles=True)
     # except Exception:
     # return "il y a une erreur dans les arguments de la fonction"
-    return potential.potid
+    return potential.id
 
 
 ## Test de la fonction download_lammps_query
@@ -418,7 +418,7 @@ def query_elements(elements: List[str], localpath=".") -> List[str]:
             # print(potential.potid)
             liste_correspondance.append(potential)
             cpt += 1
-    print("Il y a " + str(cpt) + " correspondances")
+    # print("Il y a " + str(cpt) + " correspondances")
     return liste_correspondance
 
 ### Test de la fonction query_elements
