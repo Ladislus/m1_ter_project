@@ -26,6 +26,12 @@ def cleanDirPotential(localpath: str = '.'):
             os.remove(path)
 
 
+def getAllPairStyles() -> list[str]:
+    db = am.library.Database(load='lammps_potentials', verbose=False)
+    db.load_lammps_potentials()
+    return db.lammps_potentials_df.pair_style
+
+
 def download_all_lammps_potentials(verbose: bool = True, format: str = 'json', localpath: str = '.',
                                    testException: bool = False, cleanDir: bool = False):
     """
