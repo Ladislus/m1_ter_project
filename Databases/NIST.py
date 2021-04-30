@@ -4,6 +4,11 @@ import shutil
 import os
 from pathlib import Path
 
+# Vérification que le fichier de base de données est présent
+if not os.path.isdir("./potential_LAMMPS"):
+    print("Création du dossier de base de donnée Nist")
+    os.mkdir("./potential_LAMMPS")
+
 
 def _clearPotentials(localpath: str = '.'):
     """
@@ -132,9 +137,10 @@ def _getAbsolutePathArticle(pot_id: str = None, localpath: str = ".") -> str:
     Une chaine de caractère qui est le chemin de l'article (dossier) passé en paramètre
 
     """
+
     db_dossier = os.path.isdir(localpath + "/potential_LAMMPS")
 
-    assert db_dossier == True, "Il n'y a pas de base de donnée locale"
+    assert db_dossier, "Il n'y a pas de base de donnée locale"
     assert type(pot_id) == str, "le potentiel doit être un string"
     assert type(localpath) == str, "Le localpath doit être un string"
     ## chargement de la bd local
@@ -220,14 +226,15 @@ def downloadAllWithFamilyAndElements(elements: List[str], pair_style: str, verbo
     liste_chemin = []
     for article in test:
         liste_chemin.append(_getAbsolutePathArticle(article.id))
-    db.save_lammps_potentials(test, format=format, verbose=verbose, localpath=localpath)
+    db.save_lammps_potentials(test, format=format, verbose=verbose, localpath=localpath + "/potential_LAMMPS")
     return liste_chemin
 
 
 ### Test de la fonction downloadAllWithFamilyAndElements
 # print(downloadAllWithFamilyAndElements(["Ni","Cu"], "eam"))
 
-def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpath=".", verbose: bool = False) -> List[str]:
+def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpath=".", verbose: bool = False) -> List[
+    str]:
     """
     Permet de récupérer les noms des articles LAMMPS qui sont compatibles avec les élements/atomes passés en paramètres
 
@@ -269,7 +276,8 @@ def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpat
         assert len(atom) == 2, "Tous les élements de la liste doivent être sous leur symbole atomique"
 
     try:
-        db = am.library.Database(local=True, localpath=localpath, remote=False, verbose=verbose, load="lammps_potentials")
+        db = am.library.Database(local=True, localpath=localpath, remote=False, verbose=verbose,
+                                 load="lammps_potentials")
     except Exception:
         print("Un problème est subvenu avec le chargement de la base de donnée des potentiels")
 
@@ -285,4 +293,4 @@ def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpat
     return liste_correspondance
 
 ### Test de la fonction
-#print(test(["Ni", "Cu"], "eam"))
+# print(test(["Ni", "Cu"], "eam"))

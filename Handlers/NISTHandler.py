@@ -1,4 +1,4 @@
-from Errorhandler import ErrorHandler
+from Handlers import ErrorHandler
 from Inputs.CLIParser import Params
 from Databases import NIST
 
@@ -13,7 +13,9 @@ class NISTHandler:
 
     def load(self):
         # Partie téléchargement de base de donnée complete
+        print("Téléchargement de la base de données NIST complete...")
         NIST.downloadAll(verbose=not self._cli[Params.QUIET])
+        print("OK")
 
     def checkFamily(self):
         """
@@ -49,7 +51,7 @@ class NISTHandler:
             [self._filesFound.add(fileFound) for fileFound in filesFound]
         else:
             print("Aucun article correspondant n'a été trouvé dans les repertoires distants")
-        print("OK")
+        print("OK\n")
 
     def downloadLocal(self):
         """
@@ -66,13 +68,15 @@ class NISTHandler:
             [self._filesFound.add(fileFound) for fileFound in filesFound]
         else:
             print("Aucun article correspondant n'a été trouvé dans les repertoires locaux")
-        print("OK\n")
+        print("OK")
 
     def launch(self) -> set[str]:
         print("####### NIST #######")
 
         if self._cli[Params.LOAD_NIST]:
             self.load()
+
+        self.checkFamily()
 
         if not self._criticalErrorEncountered:
             if not self._cli[Params.LOCAL_ONLY]:

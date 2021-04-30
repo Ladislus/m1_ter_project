@@ -3,6 +3,7 @@ from Printers import printArgs
 from Handlers import ErrorHandler, NISTHandler, KIMHandler
 
 if __name__ == '__main__':
+    filesFound: set[str] = set()
     errorHandler: ErrorHandler = ErrorHandler()
     cli: dict = CLIParser.parse()
     printArgs(cli)
@@ -10,8 +11,11 @@ if __name__ == '__main__':
     # Partie NIST
     if not cli[Params.OPENKIM_ONLY]:
         nistHandler: NISTHandler = NISTHandler(errorHandler, cli)
-        nistHandler.launch()
+        nistFiles: set[str] = nistHandler.launch()
+        filesFound = set.union(filesFound, nistFiles)
 
     if not cli[Params.NIST_ONLY]:
         kimHandler: KIMHandler = KIMHandler(errorHandler, cli)
         kimHandler.launch()
+
+    print("Fichiers trouvés:\n[\n\t{}\n]".format("\n\t".join(filesFound)))

@@ -25,4 +25,4 @@ class ErrorHandler:
                 print("\tError {}: {}".format(i, self._errors[i]))
             self.clear()
         else:
-            print("No errors\n")
+            print("No errors")
