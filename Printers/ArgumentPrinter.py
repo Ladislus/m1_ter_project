@@ -1,7 +1,7 @@
-from CLIParser import Params
+from Inputs.CLIParser import Params
 
 
-def print_parameters(parameters: dict):
+def printArgs(parameters: dict):
     if not parameters[Params.QUIET]:
         print("\n###### Options ######")
 

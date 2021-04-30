@@ -32,8 +32,8 @@ def getAllPairStyles() -> set[str]:
     return set(db.lammps_potentials_df.pair_style)
 
 
-def download_all_lammps_potentials(verbose: bool = True, format: str = 'json', localpath: str = '.',
-                                   testException: bool = False, cleanDir: bool = False):
+def downloadAll(verbose: bool = True, format: str = 'json', localpath: str = '.',
+                testException: bool = False, cleanDir: bool = False):
     """
     Permet de télécharger tous les potentiels compatibles LAMMPS de la base du NIST
 
@@ -90,7 +90,7 @@ def download_all_lammps_potentials(verbose: bool = True, format: str = 'json', l
             print(e)  # Afficher l'erreur
 
             # Pour tous les fichiers du format téléchargés dans dossier potential_LAMMPS
-            for fname in Path(lib.localpath, 'potential_LAMMPS').glob(f'*.{format}'):
+            for fname in Path(lib.localpath, '../potential_LAMMPS').glob(f'*.{format}'):
                 # récupérer que les nom des dossiers des potentiels
                 name = fname.stem
 
@@ -100,7 +100,7 @@ def download_all_lammps_potentials(verbose: bool = True, format: str = 'json', l
                     continue
 
                 # chemin du dossier dont le nom est passé en paramètre (ex : "potential_LAMMPS")
-                dirname = Path(lib.localpath, 'potential_LAMMPS', name)
+                dirname = Path(lib.localpath, '../potential_LAMMPS', name)
                 # print(dirname)
 
                 # Remove records for potentials without folders to download again
@@ -165,7 +165,7 @@ def download_lammps_query(pot_id: str = None, id: str = None, elements: List[str
     """
     Permet de télécharger un article (dossier) qui contient des fichiers potentiels avec le pot_id de l'article, l'identifiant de l'article
     ou avec une liste d'éléments (symbole atomique de 2 caractères).
-    Au moins, un des paramètre doit être donné.
+    Au moins, un des paramètres doit être donné.
 
     Parametres
     ----------
@@ -173,12 +173,13 @@ def download_lammps_query(pot_id: str = None, id: str = None, elements: List[str
         Une chaine de caractère qui représente l'identifiant d'un potentiel.
         Si une liste d'identifiant est passé alors un menu vous demandera de choisir
         lequel des 2 vous voulez télécharger
-        exemple : 2009--Bonny-G--Fe-Cu-Ni--LAMMPS--ipr1
+        exemple : 2009--Bonny-G-Pasianot-R-C-Castin-N-Malerba-L--Fe-Cu-Ni
     id : str, optionel
         Une chaine de caractère qui représente l'identifiant de l'objet qui représente un potentiel.
+        C'est le nom du dossier qui sera télécharger (également le nom de l'article qui contient les fichiers potentiels)
         Si une liste d'identifiant est passé alors un menu vous demandera de choisir
         lequel des 2 vous voulez télécharger
-        exemple : 2009--Bonny-G-Pasianot-R-C-Castin-N-Malerba-L--Fe-Cu-Ni
+        exemple : 2009--Bonny-G--Fe-Cu-Ni--LAMMPS--ipr1
     elements: str, liste de str, optionnel
         Une chaine de cractère ou une liste de caractère qui représente les éléments que doit utiliser
         le potentiel. Si plusieurs potentiels correspondent aux éléments alors, un menu vous demandera lequel
@@ -188,6 +189,10 @@ def download_lammps_query(pot_id: str = None, id: str = None, elements: List[str
     ----------
     Pas de temps spécifique car s'il y a plusieurs correspondance alors vous aurez un menu qui vous demande de
     choisir le potentiel que vous voule, ce qui ruine donc la mesure du temps.
+
+     Retour
+    ----------
+    Vous retournera l'id (nom du dossier) que vous aurez téléchargé.
     """
     # try:
     if (pot_id is not None and (id is None and elements is None)):
@@ -431,3 +436,38 @@ def query_elements(elements: List[str], localpath=".") -> List[str]:
 # print(query_elements(elements="Ni")) ## -> AssertionError Les elements doivent passé dans une liste
 # print(query_elements(elements=1)) ## -> AssertionError Les elements doivent passé dans une liste
 # print(query_elements(elements=["Nickel","Cuivre"])) ## -> AssertionError Tous les élements de la liste doivent être sous leur symbole atomique
+
+def downloadOneWithFamilyAndElements(elements: List[str], pair_style: str, localpath:str = ".", verbose:str=False) -> str:
+    """
+    Permet de télécharger un article en local en fonction d'une liste d'élements atomique et d'une famille de pair_style
+
+    Parametres
+    ----------
+     elements: liste de str
+        Une liste de chaine de caractère qui contient des symboles atomique.
+        Si un autre type est passé en paramètre, une AssertionError est levée.
+        Si une liste qui ne contient pas que des strings est passé en paramètre, une AssertionError est levée.
+        Si une liste qui ne contient pas que des strings de 2 caractères est passé en paramètre, une AssertionError est levée.
+        Exemple: ["Ni"] ou ["Ni","Cu"]
+    localpath : str, optionel
+        Une chaine de caractère qui représente le chemin vers le dossier potential_LAMMPS.
+        Par défaut, le chemin est le chemin courant.
+        Si l'utilisateur passe autre chose qu'une chaine de caractère, une AssertionError est levée.
+    pair_style : str
+        Un string qui est le pair_style du potentiel à télécharger.
+        Exemple: 'eam' ou 'eam/alloy'
+    Retour
+    ----------
+    l'identifiant de l'article choisit
+    """
+    assert type(elements) == list, "Les elements doivent passé dans une liste"
+    assert len(elements) > 0 , "La liste de peut être vide"
+    for atom in elements:
+        assert type(atom) == str, "Tous les élements de la liste doivents êtres des strings"
+        assert len(atom) == 2,"Tous les élements de la liste doivent être sous leur symbole atomique"
+    potential = am.load_lammps_potential(pair_style=pair_style, elements=elements,localpath=".",getfiles=True)
+    return potential.id
+
+### Test de la fonction download_potential_element_family
+#print(download_potential_element_family(["Ni","Cu"], "eam"))
+
