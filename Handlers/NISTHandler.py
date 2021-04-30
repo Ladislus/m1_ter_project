@@ -15,7 +15,7 @@ class NISTHandler:
         # Partie téléchargement de base de donnée complete
         print("Téléchargement de la base de données NIST complete...")
         NIST.downloadAll(verbose=not self._cli[Params.QUIET])
-        print("OK")
+        print("OK\n")
 
     def checkFamily(self):
         """
@@ -68,7 +68,7 @@ class NISTHandler:
             [self._filesFound.add(fileFound) for fileFound in filesFound]
         else:
             print("Aucun article correspondant n'a été trouvé dans les repertoires locaux")
-        print("OK")
+        print("OK\n")
 
     def launch(self) -> set[str]:
         print("####### NIST #######")
