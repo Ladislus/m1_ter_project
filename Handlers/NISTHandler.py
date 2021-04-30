@@ -26,7 +26,7 @@ class NISTHandler:
 
         # Vérification de la validité de la famille demandée
         print("Récupération des familles disponnibles... ", end="")
-        families: set[str] = NIST.getAllPairStyles()
+        families: set[str] = NIST.downloadAllFamilies()
         print("OK")
         if self._cli[Params.VERBOSE]:
             print("Familles disponnibles:\n[ {} ]".format(", ".join(families)))
@@ -39,14 +39,16 @@ class NISTHandler:
         Methode pour la récupération des fichiers potentiels correspondant aux demandes (en distant seulement)
         """
         print("Récupération des potentiels en ligne...")
-        fileFound: str = NIST.downloadOneWithFamilyAndElements(
+        filesFound: list[str] = NIST.downloadAllWithFamilyAndElements(
             elements=self._cli[Params.ELEMENTS],
-            pair_style=self._cli[Params.FAMILY]
+            pair_style=self._cli[Params.FAMILY],
+            verbose=not self._cli[Params.QUIET]
         )
-        if fileFound is not None:
-            self._filesFound.add(fileFound)
-            if self._cli[Params.VERBOSE]:
-                print("Chemin local vers le dossier de l'article: {}".format(fileFound))
+        if len(filesFound) > 0:
+            print("Articles correspondants trouvés:\n\t{}".format("\n\t".join(filesFound)))
+            [self._filesFound.add(fileFound) for fileFound in filesFound]
+        else:
+            print("Aucun article correspondant n'a été trouvé dans les repertoires distants")
         print("OK")
 
     def downloadLocal(self):
@@ -54,14 +56,16 @@ class NISTHandler:
         Methode pour la récupération des fichiers potentiels correspondant aux demandes (en local seulement)
         """
         print("Récupération des potentiels en local...")
-        potentialsId: list[str] = NIST.query_elements(elements=self._cli[Params.ELEMENTS])
-        paths: list[str] = []
-        for potentialId in potentialsId:
-            paths.extend(NIST.get_absolute_path_potential(potentialId))
-        if self._cli[Params.VERBOSE]:
-            print("Chemins locaux:", end="")
-            for path in paths:
-                print("\n\t{}".format(path))
+        filesFound: list[str] = NIST.queryAllWithFamilyAndElements(
+            elements=self._cli[Params.ELEMENTS],
+            pair_style=self._cli[Params.FAMILY],
+            verbose=not self._cli[Params.QUIET]
+        )
+        if len(filesFound) > 0:
+            print("Articles correspondants trouvés:\n\t{}".format("\n\t".join(filesFound)))
+            [self._filesFound.add(fileFound) for fileFound in filesFound]
+        else:
+            print("Aucun article correspondant n'a été trouvé dans les repertoires locaux")
         print("OK\n")
 
     def launch(self) -> set[str]:
