@@ -1,1 +1,1 @@
-from ArgumentPrinter import *
+from .ArgumentPrinter import *

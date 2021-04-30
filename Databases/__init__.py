@@ -1,1 +1,1 @@
-from NIST import *
+from .NIST import *

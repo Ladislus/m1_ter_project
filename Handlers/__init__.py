@@ -1,3 +1,3 @@
-from Errorhandler import *
-from NISTHandler import *
-from KIMHandler import *
+from .Errorhandler import *
+from .NISTHandler import *
+from .KIMHandler import *

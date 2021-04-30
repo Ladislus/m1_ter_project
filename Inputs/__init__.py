@@ -1,2 +1,2 @@
-from GUI import *
-from CLIParser import *
+from .GUI import *
+from .CLIParser import *
