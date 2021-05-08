@@ -234,7 +234,7 @@ def downloadAllWithFamilyAndElements(elements: List[str], pair_style: str, verbo
     liste_chemin = []
     for article in test:
         liste_chemin.append(_getAbsolutePathArticle(article.id))
-    db.save_lammps_potentials(test, format=format, verbose=verbose, localpath=localpath + "/potential_LAMMPS")
+    db.save_lammps_potentials(test, format=format, verbose=verbose, localpath=localpath)
     return liste_chemin
 
 
