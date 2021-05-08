@@ -14,11 +14,15 @@ def _clearPotentials(localpath: str = '.'):
     """
     Permet de supprimer tous les articles (dossiers) dans le dossier potential_LAMMPS
 
-     Parametres
+    Parametres
     ----------
-    localpath : str, optionel
+    localpath : str, optionnel
         Chemin vers un dossier local où les potentiels seront copiés.
-        La valeur par défaut est le dossier ou est lancé le '.'
+        La valeur par défaut est le chemin courant '.'
+
+    Retour
+    ----------
+    Pas de retour, mais supprime tous les dossiers et fichiers du dossier potential_LAMMPS
     """
     dir = localpath + '/potential_LAMMPS'
 
@@ -43,22 +47,22 @@ def downloadAll(verbose: bool = True, format: str = 'json', localpath: str = '.'
 
     Parametres
     ----------
-    verbose : bool, optionel
-        Si True, des messages seront affichés pendant l'éxécution.
+    verbose : bool, optionnel
+        Si True, des messages seront affichés pendant l'exécution.
         La valeur par défaut est True.
         Exemple: True ou False
-    format : str, optionel
-        Le format des fichiers pour sauver les résulats localement.
+    format : str, optionnel
+        Le format des fichiers pour sauver les résultats localement.
         Les valeurs autorisées sont 'xml' et 'json'. La valeur par défaut est 'json'
         Exemple: "json" ou "xml"
-    localpath : str, optionel
+    localpath : str, optionnel
         Chemin vers un dossier local où les potentiels seront copiés.
-        La valeur par défaut est le dossier ou est lancé le '.'
-    testException : bool, optionel
+        La valeur par défaut est le chemin courant '.'
+    testException : bool, optionnel
         Si True, création d'une erreur (div par 0) pour tester le passage dans l'exception
-        False par defaut
+        False par défaut
         Exemple: True ou False
-    cleanDir : bool, optionel
+    cleanDir : bool, optionnel
         Si True, supprime le dossier de téléchargement de tous les potentiels
         Si False, ne supprime pas le dossier de téléchargement
         La valeur par défaut est False.
@@ -66,8 +70,12 @@ def downloadAll(verbose: bool = True, format: str = 'json', localpath: str = '.'
 
     Temps
     ----------
-    Pour télécharger toutes la base (test avec 722 potentiels), mode verbose activé, avec clean: environ 10min
-    Pour télécharger toutes la base (test avec 722 potentiels), sans verbose, avec clean : environ 10min
+    Pour télécharger toute la base (test avec 722 potentiels), mode verbose activé, avec clean: environ 10min
+    Pour télécharger toute la base (test avec 722 potentiels), sans verbose, avec clean : environ 10min
+
+    Retour
+    ----------
+    Pas de retour, mais télécharge les potentiels compatible LAMMPS dans le localpath spécifié.
     """
 
     if cleanDir:
@@ -117,31 +125,30 @@ def downloadAll(verbose: bool = True, format: str = 'json', localpath: str = '.'
             break
 
 
-def _getAbsolutePathArticle(pot_id: str = None, localpath: str = ".") -> str:
+def _getAbsolutePathArticle(id: str = None, localpath: str = ".") -> str:
     """
     Permet de récupérer le chemin absolu d'un article (dossier) qui contient des fichiers de potentiel
 
     Parametres
     ----------
-    pot_id: str
-        Une chaine de caractère qui représente le nom d'un article (dossier)
-        Si un autre type est passé en paramètre, un AssertionError est levée.
+    id: str
+        Une chaîne de caractère qui représente le nom d'un article (dossier)
+        Si un autre type est passé en paramètre, une AssertionError est levée.
         Exemple: "1985--Foiles-S-M--Ni-Cu--LAMMPS--ipr1"
-    localpath : str, optionel
-        Une chaine de caractère qui représente le chemin vers le dossier potential_LAMMPS.
+    localpath : str, optionnel
+        Une chaîne de caractère qui représente le chemin vers le dossier potential_LAMMPS.
         Par défaut, le chemin est le chemin courant.
-        Si l'utilisateur passe autre chose qu'une chaine de caractère, une AssertionError est levée.
+        Si l'utilisateur passe autre chose qu'une chaîne de caractère, une AssertionError est levée.
 
     Retour
     ----------
-    Une chaine de caractère qui est le chemin de l'article (dossier) passé en paramètre
-
+    Une chaîne de caractère qui est le chemin de l'article (dossier) passé en paramètre
     """
 
     db_dossier = os.path.isdir(localpath + "/potential_LAMMPS")
 
     assert db_dossier, "Il n'y a pas de base de donnée locale"
-    assert type(pot_id) == str, "le potentiel doit être un string"
+    assert type(id) == str, "le potentiel doit être un string"
     assert type(localpath) == str, "Le localpath doit être un string"
     ## chargement de la bd local
     try:
@@ -151,19 +158,19 @@ def _getAbsolutePathArticle(pot_id: str = None, localpath: str = ".") -> str:
 
     ## test de récupération d'un potentiel avec sont id
     ##'1985--Foiles-S-M--Ni-Cu--LAMMPS--ipr1'
-    potential = db.get_lammps_potential(id=pot_id)
+    potential = db.get_lammps_potential(id=id)
     return os.getcwd() + "/potential_LAMMPS/" + str(potential) + "/"
 
 
 def downloadOneWithFamilyAndElements(elements: List[str], pair_style: str, localpath: str = ".",
                                      verbose: str = False) -> str:
     """
-    Permet de télécharger un article en local en fonction d'une liste d'élements atomique et d'une famille de pair_style
+    Permet de télécharger un article en local en fonction d'une liste d'éléments atomique et d'une famille de pair_style
 
     Parametres
     ----------
      elements: liste de str
-        Une liste de chaine de caractère qui contient des symboles atomique.
+        Une liste de chaîne de caractère qui contient des symboles atomique.
         Si un autre type est passé en paramètre, une AssertionError est levée.
         Si une liste qui ne contient pas que des strings est passé en paramètre, une AssertionError est levée.
         Si une liste qui ne contient pas que des strings de 2 caractères est passé en paramètre, une AssertionError est levée.
@@ -171,10 +178,11 @@ def downloadOneWithFamilyAndElements(elements: List[str], pair_style: str, local
     pair_style : str
         Un string qui est le pair_style du potentiel à télécharger.
         Exemple: 'eam' ou 'eam/alloy'
-    localpath : str, optionel
-        Une chaine de caractère qui représente le chemin vers le dossier potential_LAMMPS.
+    localpath : str, optionnel
+        Une chaîne de caractère qui représente le chemin vers le dossier potential_LAMMPS.
         Par défaut, le chemin est le chemin courant.
-        Si l'utilisateur passe autre chose qu'une chaine de caractère, une AssertionError est levée.
+        Si l'utilisateur passe autre chose qu'une chaîne de caractère, une AssertionError est levée.
+
     Retour
     ----------
     l'identifiant de l'article choisit
@@ -194,12 +202,12 @@ def downloadOneWithFamilyAndElements(elements: List[str], pair_style: str, local
 def downloadAllWithFamilyAndElements(elements: List[str], pair_style: str, verbose: bool = False, localpath: str = ".",
                                      format: str = 'json') -> List[str]:
     """
-    Permet de télécharger tous les potentiels compatibles avec la liste d'élements et la famille passé en paramètre.
+    Permet de télécharger tous les potentiels compatibles avec la liste d'éléments et la famille passée en paramètre.
 
     Parametres
     ----------
     elements: liste de str
-        Une liste de chaine de caractère qui contient des symboles atomique.
+        Une liste de chaîne de caractère qui contient des symboles atomique.
         Si un autre type est passé en paramètre, une AssertionError est levée.
         Si une liste qui ne contient pas que des strings est passé en paramètre, une AssertionError est levée.
         Si une liste qui ne contient pas que des strings de 2 caractères est passé en paramètre, une AssertionError est levée.
@@ -207,8 +215,8 @@ def downloadAllWithFamilyAndElements(elements: List[str], pair_style: str, verbo
     pair_style : str
         Un string qui est le pair_style du potentiel à télécharger.
         Exemple: 'eam' ou 'eam/alloy'
-    localpath : str, optionel
-        Une chaine de caractère qui représente le chemin vers le dossier potential_LAMMPS.
+    localpath : str, optionnel
+        Une chaîne de caractère qui représente le chemin vers le dossier potential_LAMMPS.
         Par défaut, le chemin est le chemin courant.
 
     Temps
@@ -241,7 +249,7 @@ def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpat
     Parametres
     ----------
     elements: liste de str
-        Une liste de chaine de caractère qui contient des symboles atomique.
+        Une liste de chaînes de caractère qui contient des symboles atomique.
         Si un autre type est passé en paramètre, une AssertionError est levée.
         Si une liste qui ne contient pas que des strings est passé en paramètre, une AssertionError est levée.
         Si une liste qui ne contient pas que des strings de 2 caractères est passé en paramètre, une AssertionError est levée.
@@ -249,19 +257,19 @@ def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpat
     pair_style : str
         Un string qui est le pair_style du potentiel à télécharger.
         Exemple: 'eam' ou 'eam/alloy'
-    localpath : str, optionel
-        Une chaine de caractère qui représente le chemin vers le dossier potential_LAMMPS.
+    localpath : str, optionnel
+        Une chaîne de caractère qui représente le chemin vers le dossier potential_LAMMPS.
         Par défaut, le chemin est le chemin courant.
-        Si l'utilisateur passe autre chose qu'une chaine de caractère, une AssertionError est levée.
+        Si l'utilisateur passe autre chose qu'une chaîne de caractère, une AssertionError est levée.
 
     Temps
     ----------
-    Environ 1s voir plus avec elements=["Ni","Cu"] et pair_style="eam", pour 3 articles.elements
+    Environ 1s voir plus avec elements=["Ni","Cu"] et pair_style="eam", pour 3 articles.
 
     Retour
     ----------
-    Une liste de chaine de potentiels qui contient les noms des articles dossiers qui contiennent des potentiels qui correspondent
-    au éléments/atomes passé en paramètre
+    Une liste de potentiels qui contient les noms des articles dossiers qui contiennent des potentiels qui correspondent
+    au éléments/atomes passés en paramètre
 
     Pour gérer les potentiels retournés, voir https://www.ctcms.nist.gov/potentials/atomman/tutorial/2.1._Potential_class.html
     """
