@@ -1,4 +1,4 @@
-from Inputs.CLIParser import Params
+from Inputs import Params
 
 
 def printArgs(parameters: dict):

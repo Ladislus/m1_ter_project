@@ -1,20 +1,20 @@
 from Handlers import ErrorHandler
-from Inputs.CLIParser import Params
+from Inputs import Params
 from Databases import NIST
 
 
 class NISTHandler:
 
-    def __init__(self, errorHandler: ErrorHandler, cli: dict):
+    def __init__(self, errorHandler: ErrorHandler, settings: dict):
         self._errorHandler = errorHandler
         self._criticalErrorEncountered = False
         self._filesFound: set[str] = set()
-        self._cli = cli
+        self._settings = settings
 
     def load(self):
         # Partie téléchargement de base de donnée complete
         print("Téléchargement de la base de données NIST complete...")
-        NIST.downloadAll(verbose=not self._cli[Params.QUIET])
+        NIST.downloadAll(verbose=not self._settings[Params.QUIET])
         print("OK\n")
 
     def checkFamily(self):
@@ -22,18 +22,18 @@ class NISTHandler:
         Méthode qui vérifie que la famille d'intéraction demandée est supportée par le NIST
         """
         # Conversion spéciale de la famille meam/C
-        if self._cli[Params.FAMILY] == "meam/c":
+        if self._settings[Params.FAMILY] == "meam/c":
             print("Avertissement: Atomman utilise 'meam' à la place de 'meam/c', la famille a donc été changée")
-            self._cli[Params.FAMILY] = "meam"
+            self._settings[Params.FAMILY] = "meam"
 
         # Vérification de la validité de la famille demandée
         print("Récupération des familles disponnibles... ", end="")
         families: set[str] = NIST.downloadAllFamilies()
         print("OK")
-        if self._cli[Params.VERBOSE]:
+        if self._settings[Params.VERBOSE]:
             print("Familles disponnibles:\n[ {} ]".format(", ".join(families)))
-        if self._cli[Params.FAMILY] not in families:
-            self._errorHandler.addError("[CRITIQUE] Familles '{}' non supportée".format(self._cli[Params.FAMILY]))
+        if self._settings[Params.FAMILY] not in families:
+            self._errorHandler.addError("[CRITIQUE] Familles '{}' non supportée".format(self._settings[Params.FAMILY]))
             self._criticalErrorEncountered = True
 
     def downloadRemote(self):
@@ -42,9 +42,9 @@ class NISTHandler:
         """
         print("Récupération des potentiels en ligne...")
         filesFound: list[str] = NIST.downloadAllWithFamilyAndElements(
-            elements=self._cli[Params.ELEMENTS],
-            pair_style=self._cli[Params.FAMILY],
-            verbose=not self._cli[Params.QUIET]
+            elements=self._settings[Params.ELEMENTS],
+            pair_style=self._settings[Params.FAMILY],
+            verbose=not self._settings[Params.QUIET]
         )
         if len(filesFound) > 0:
             print("Articles correspondants trouvés:\n\t{}".format("\n\t".join(filesFound)))
@@ -59,9 +59,9 @@ class NISTHandler:
         """
         print("Récupération des potentiels en local...")
         filesFound: list[str] = NIST.queryAllWithFamilyAndElements(
-            elements=self._cli[Params.ELEMENTS],
-            pair_style=self._cli[Params.FAMILY],
-            verbose=not self._cli[Params.QUIET]
+            elements=self._settings[Params.ELEMENTS],
+            pair_style=self._settings[Params.FAMILY],
+            verbose=not self._settings[Params.QUIET]
         )
         if len(filesFound) > 0:
             print("Articles correspondants trouvés:\n\t{}".format("\n\t".join(filesFound)))
@@ -73,15 +73,15 @@ class NISTHandler:
     def launch(self) -> set[str]:
         print("####### NIST #######")
 
-        if self._cli[Params.LOAD_NIST]:
+        if self._settings[Params.LOAD_NIST]:
             self.load()
 
         self.checkFamily()
 
         if not self._criticalErrorEncountered:
-            if not self._cli[Params.LOCAL_ONLY]:
+            if not self._settings[Params.LOCAL_ONLY]:
                 self.downloadRemote()
-            if not self._cli[Params.REMOTE_ONLY]:
+            if not self._settings[Params.REMOTE_ONLY]:
                 self.downloadLocal()
 
         self._errorHandler.output()
