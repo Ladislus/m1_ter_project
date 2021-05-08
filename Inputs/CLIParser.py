@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from . import Params
+from .Params import Params
 
 
 def parse() -> dict:
