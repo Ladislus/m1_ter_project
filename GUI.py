@@ -56,7 +56,7 @@ class GUI(Frame):
                               fg='white')
         label_element.pack()
 
-        listeFamille = ["eam", "eam/fs", "eam/fs", "meam/c"]
+        listeFamille = ["eam", "eam/fs", "eam/alloy", "meam/c"]
         self._family = StringVar(self)
         self._family.set(listeFamille[0])
         opt = OptionMenu(self,
