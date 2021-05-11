@@ -281,7 +281,7 @@ def queryAllWithFamilyAndElements(elements: List[str], pair_style: str, localpat
     assert type(localpath) == str, "Le localpath doit être un string"
     for atom in elements:
         assert type(atom) == str, "Tous les élements de la liste doivents êtres des strings"
-        assert len(atom) == 2, "Tous les élements de la liste doivent être sous leur symbole atomique"
+        # assert len(atom) == 2, "Tous les élements de la liste doivent être sous leur symbole atomique"
 
     try:
         db = am.library.Database(local=True, localpath=localpath, remote=False, verbose=verbose,
